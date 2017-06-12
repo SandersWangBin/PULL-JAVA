@@ -1,5 +1,6 @@
 package com.json.check;
 
+import com.sanderswangbin.pull.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +25,21 @@ public class JsonCheck {
 		return result;
 	}
 
+	public boolean compare(int left, int right) {
+		Operator op = new Operator();
+		return op.get(">").compare(left, right);
+	}
+	public boolean compare(String left, String right) {
+		Operator op = new Operator();
+		return op.get(">").compare(left, right);
+	}
+
 	public static void main(String... argv) {
 		JsonCheck jck = new JsonCheck();
 		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, REG_EXAMPLE_01_CHECKS));
 		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_FALSE, REG_EXAMPLE_01_CHECKS));
+		
+		System.out.println(jck.compare(10, 5));
+		System.out.println(jck.compare("ok", "ok"));
 	}
 }
