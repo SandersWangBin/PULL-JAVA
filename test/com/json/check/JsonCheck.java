@@ -25,13 +25,19 @@ public class JsonCheck {
 		return result;
 	}
 
-	public boolean compare(int left, int right) {
-		Operator op = new Operator();
-		return op.get(">").compare(left, right);
+	public boolean compare(int left, String op, int right) {
+		try {
+		    return Operator.cmp.get(op).compare(left, right);
+		} catch (Exception e){
+			return false;
+		}
 	}
-	public boolean compare(String left, String right) {
-		Operator op = new Operator();
-		return op.get(">").compare(left, right);
+	public boolean compare(String left, String op, String right) {
+		try {
+		    return Operator.cmp.get(op).compare(left, right);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public static void main(String... argv) {
@@ -39,7 +45,7 @@ public class JsonCheck {
 		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, REG_EXAMPLE_01_CHECKS));
 		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_FALSE, REG_EXAMPLE_01_CHECKS));
 		
-		System.out.println(jck.compare(10, 5));
-		System.out.println(jck.compare("ok", "ok"));
+		System.out.println(jck.compare(10, ">", 5));
+		System.out.println(jck.compare("ok", "==", "nok"));
 	}
 }

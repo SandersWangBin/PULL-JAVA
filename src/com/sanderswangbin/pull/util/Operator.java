@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Operator {
-	Map<String, OperatorItf> cmp = new HashMap<String, OperatorItf>();
+	public static Map<String, OperatorItf> cmp = new HashMap<String, OperatorItf>();
 
-	public <T> Operator() {
+	static {
 		cmp.put(">", new OperatorItf() {
 			@Override public boolean compare(Comparable left, Comparable right) {
 				return (left.compareTo(right)>0);
@@ -22,6 +22,11 @@ public class Operator {
 				return (left.compareTo(right)==0);
 			}
 		});
+		cmp.put("!=", new OperatorItf() {
+			@Override public boolean compare(Comparable left, Comparable right) {
+				return (left.compareTo(right)!=0);
+			}
+		});
 		cmp.put("<", new OperatorItf() {
 			@Override public boolean compare(Comparable left, Comparable right) {
 				return (left.compareTo(right)<=0);
@@ -34,7 +39,4 @@ public class Operator {
 		});
 	}
 
-	public OperatorItf get(String op) {
-		return cmp.get(op);
-	}
 }
