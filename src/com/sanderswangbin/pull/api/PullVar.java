@@ -17,7 +17,7 @@ public class PullVar {
 	private String op = "";
 	private String value = "";
 	private String expect = "";
-	private boolean result = true;
+	private boolean result = false;
 	private String type = TYPE_STRING;
 
 	public PullVar(String pullArg) {
@@ -47,6 +47,11 @@ public class PullVar {
 	public PullVar setValue(String value) {
 		this.value = value;
 		return this;
+	}
+
+	public void clean() {
+		value = "";
+		result = false;
 	}
 
 	private boolean startsAndEndsWith(String text, String subText) {
