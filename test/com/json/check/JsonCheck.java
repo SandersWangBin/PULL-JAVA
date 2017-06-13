@@ -1,5 +1,6 @@
 package com.json.check;
 
+import com.sanderswangbin.pull.api.PullObj;
 import com.sanderswangbin.pull.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,16 +26,10 @@ public class JsonCheck {
 		return result;
 	}
 
-	public boolean compare(int left, String op, int right) {
+	public boolean checkUsePull(String pullEx, String text) {
 		try {
-		    return Operator.cmp.get(op).compare(left, right);
-		} catch (Exception e){
-			return false;
-		}
-	}
-	public boolean compare(String left, String op, String right) {
-		try {
-		    return Operator.cmp.get(op).compare(left, right);
+		    PullObj p = new PullObj(pullEx);
+		    return p.check(text);
 		} catch (Exception e) {
 			return false;
 		}
@@ -42,10 +37,10 @@ public class JsonCheck {
 
 	public static void main(String... argv) {
 		JsonCheck jck = new JsonCheck();
-		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, REG_EXAMPLE_01_CHECKS));
-		System.out.println(jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_FALSE, REG_EXAMPLE_01_CHECKS));
+		System.out.println("Check result using regex: " + jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, REG_EXAMPLE_01_CHECKS));
+		System.out.println("Check result using regex: " + jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_FALSE, REG_EXAMPLE_01_CHECKS));
 		
-		System.out.println(jck.compare(10, ">", 5));
-		System.out.println(jck.compare("ok", "==", "nok"));
+		System.out.println("Check result using PULL: " + jck.checkUsePull(PULL_EXAMPLE_01, JSON_EXAMPLE_01_TRUE));
+		System.out.println("Check result using PULL: " + jck.checkUsePull(PULL_EXAMPLE_01, JSON_EXAMPLE_01_FALSE));
 	}
 }
