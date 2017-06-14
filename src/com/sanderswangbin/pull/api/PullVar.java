@@ -3,7 +3,8 @@ package com.sanderswangbin.pull.api;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sanderswangbin.pull.util.Operator;
+import com.sanderswangbin.pull.util.OperatorCmp;
+import com.sanderswangbin.pull.util.OperatorFactory;
 
 public class PullVar {
 	private String REG_PULL_VAR = "\\{([0-9]+)\\}\\s*([!<=>]+)\\s*(.*)";
@@ -35,18 +36,25 @@ public class PullVar {
 		}
 	}
 
-	public Integer getIndex() {
+	public Integer index() {
 		return this.index;
 	}
 
-	public boolean getResult() {
-		checkResult();
-		return this.result;
+	public boolean result() {
+		return checkResult();
 	}
 
-	public PullVar setValue(String value) {
+	public PullVar value(String value) {
 		this.value = value;
 		return this;
+	}
+
+	public String value() {
+		return this.value;
+	}
+
+	public String alias() {
+		return this.alias;
 	}
 
 	public void clean() {
@@ -66,27 +74,12 @@ public class PullVar {
 		}
 	}
 
-	private void checkResult() {
+	private boolean checkResult() {
 		if (this.type == TYPE_INTEGER) {
-			this.result = compare(Integer.valueOf(this.value), this.op, Integer.valueOf(this.expect));
+			this.result = OperatorFactory.compare(Integer.valueOf(this.value), this.op, Integer.valueOf(this.expect));
 		} else {
-			this.result = compare(this.value, this.op, this.expect);
+			this.result = OperatorFactory.compare(this.value, this.op, this.expect);
 		}
-	}
-
-	public boolean compare(int left, String op, int right) {
-		try {
-		    return Operator.cmp.get(op).compare(left, right);
-		} catch (Exception e){
-			return false;
-		}
-	}
-
-	public boolean compare(String left, String op, String right) {
-		try {
-		    return Operator.cmp.get(op).compare(left, right);
-		} catch (Exception e) {
-			return false;
-		}
+		return this.result;
 	}
 }

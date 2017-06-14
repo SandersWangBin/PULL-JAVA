@@ -15,6 +15,9 @@ public class JsonCheck {
 	final static String REG_EXAMPLE_01 = "\\{\"message\": \"([a-zA-Z]+)\\s.*\'([a-zA-Z0-9_-]+)\'\"\\}";
 	final static String[] REG_EXAMPLE_01_CHECKS = {"Created", "ExampleObj01"};
 
+	final static String JSON_EXAMPLE_02_TRUE = "{\"ID\": 10, \"NAME\": \"OBJ010\"}"; 
+	final static String PULL_EXAMPLE_02 = "p\'\\{\"ID\":\\s*([0-9]+).*\"NAME\":\\s*(.*)\\s*\\}\'.PULL({0}==10;{1}<>\"OBJ[0-9]+\")";
+
 	public boolean checkUseRegex(String regex, String text, String[] checks) {
 		boolean result = true;
 		Pattern p = Pattern.compile(regex);
@@ -29,10 +32,10 @@ public class JsonCheck {
 		return result;
 	}
 
-	public List<Boolean> checkUsePull(String... texts) {
+	public List<Boolean> checkUsePull(String pullExp, String... texts) {
 		List<Boolean> results = new ArrayList<Boolean>();
 		try {
-		    PullObj p = new PullObj(PULL_EXAMPLE_01);
+		    PullObj p = new PullObj(pullExp);
 		    for (String text : texts) {
 		        results.add(p.check(text).getResult());
 		    }
@@ -47,8 +50,12 @@ public class JsonCheck {
 		System.out.println("Check result using regex: " + jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, REG_EXAMPLE_01_CHECKS));
 		System.out.println("Check result using regex: " + jck.checkUseRegex(REG_EXAMPLE_01, JSON_EXAMPLE_01_FALSE, REG_EXAMPLE_01_CHECKS));
 
-		for (Boolean result : jck.checkUsePull(JSON_EXAMPLE_01_TRUE, JSON_EXAMPLE_01_FALSE)) {
-			System.out.println("Check result using PULL: " + result);
+		for (Boolean result : jck.checkUsePull(PULL_EXAMPLE_01, JSON_EXAMPLE_01_TRUE, JSON_EXAMPLE_01_FALSE)) {
+			System.out.println("Check result using PULL (EXAMPLE_01): " + result);
+		}
+
+		for (Boolean result : jck.checkUsePull(PULL_EXAMPLE_02, JSON_EXAMPLE_02_TRUE)) {
+			System.out.println("Check result using PULL (EXAMPLE_02): " + result);
 		}
 	}
 }

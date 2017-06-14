@@ -16,24 +16,21 @@ public class PullObj {
 		Matcher m = Pattern.compile(REG_PULL_EXP).matcher(pullExp);
 		if (m.find()) {
 			this.regExp = m.group(1);
-			for (String a : m.group(2).split(";")) {
-				PullVar v = new PullVar(a.trim());
-				pullVars.put(v.getIndex(), v);
-			}
+			parserPullVars(m.group(2));
 		} else {
 			throw new Exception("ERROR: wrong PULL expression.");
 		}
 	}
 
 	public PullObj check(String text) {
-		cleanVars();
+		cleanPullVars();
 		result = true;
 		Matcher m = Pattern.compile(this.regExp).matcher(text);
 		if (m.find()) {
 			for (int i = 1; i <=m.groupCount(); i++) {
 				PullVar v = (PullVar)this.pullVars.get(i-1);
 				if (v != null) {
-					result = result && v.setValue(m.group(i)).getResult();
+					result = result && v.value(m.group(i)).result();
 				}
 			}
 		} else {
@@ -50,9 +47,16 @@ public class PullObj {
 		return this.pullVars;
 	}
 
-	private void cleanVars() {
+	private void cleanPullVars() {
 		for (Integer key : this.pullVars.keySet()) {
 			this.pullVars.get(key).clean();
+		}
+	}
+
+	private void parserPullVars(String argvExp) {
+		for (String a : argvExp.split(";")) {
+			PullVar v = new PullVar(a.trim());
+			this.pullVars.put(v.index(), v);
 		}
 	}
 }
