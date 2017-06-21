@@ -1,5 +1,7 @@
 package com.sanderswangbin.pull.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,32 +9,32 @@ import com.sanderswangbin.pull.util.OperatorCmp;
 import com.sanderswangbin.pull.util.OperatorFactory;
 
 public class PullVar {
-	private String REG_PULL_VAR = "\\{([0-9]+)\\}\\s*([!<=>]+)\\s*(.*)";
-	private String QUOTE_SINGLE = "\'";
-	private String QUOTE_DOUBLE = "\"";
-	private String TYPE_STRING = "STRING";
-	private String TYPE_INTEGER = "INTEGER";
+	private final static String REG_PULL_VAR = "\\{([0-9]+)\\}\\s*([!<=>]+)\\s*(.*)";
+	private final static String QUOTE_SINGLE = "\'";
+	private final static String QUOTE_DOUBLE = "\"";
+	private final static String BRACKET_SQUARE_LEFT = "[";
+	private final static String BRACKET_SQUARE_RIGHT = "]";
+	private final static String SEPERATE_COMMA = ",";
+	private final static String TYPE_STRING = "STRING";
+	private final static String TYPE_INTEGER = "INTEGER";
 
 	private Integer index = -1;
 	private String alias = "";
 	private String op = "";
-	private String value = "";
-	private String expect = "";
+	private List<String> values = new ArrayList<String>();
+	private List<String> expects = new ArrayList<String>();
 	private boolean result = false;
 	private String type = TYPE_STRING;
+	private static Integer value_index = -1;
 
-	public PullVar(String pullArg) {
+	public PullVar(String pullArg) throws Exception {
 		Matcher m = Pattern.compile(REG_PULL_VAR).matcher(pullArg);
 		if (m.find()) {
 			this.index = Integer.valueOf(m.group(1));
 			this.op = m.group(2);
-			this.expect = m.group(3).trim();
-			if (startsAndEndsWith(expect, QUOTE_SINGLE) || startsAndEndsWith(expect, QUOTE_DOUBLE)) {
-				type = TYPE_STRING;
-				expect = removeSubText(expect, 1);
-			} else {
-				type = TYPE_INTEGER;
-			}
+			genExpects(m.group(3).trim());
+		} else {
+			throw new Exception("ERROR: wrong PULL variable expression.");
 		}
 	}
 
@@ -45,12 +47,12 @@ public class PullVar {
 	}
 
 	public PullVar value(String value) {
-		this.value = value;
+		addValue(value);
 		return this;
 	}
 
-	public String value() {
-		return this.value;
+	public List<String> values() {
+		return this.values;
 	}
 
 	public String alias() {
@@ -58,12 +60,17 @@ public class PullVar {
 	}
 
 	public void clean() {
-		value = "";
 		result = false;
+		this.values.clear();
+		value_index = -1;
 	}
 
 	private boolean startsAndEndsWith(String text, String subText) {
 		return text.startsWith(subText) && text.endsWith(subText);
+	}
+
+	private boolean startsAndEndsWith(String text, String subText1, String subText2) {
+		return text.startsWith(subText1) && text.endsWith(subText2);
 	}
 
 	private String removeSubText(String text, int subTextLength) {
@@ -75,11 +82,40 @@ public class PullVar {
 	}
 
 	private boolean checkResult() {
-		if (this.type == TYPE_INTEGER) {
-			this.result = OperatorFactory.compare(Integer.valueOf(this.value), this.op, Integer.valueOf(this.expect));
-		} else {
-			this.result = OperatorFactory.compare(this.value, this.op, this.expect);
+		boolean localResult = true;
+		for (Integer i = 0; i < this.values.size(); i++) {
+			if (this.type == TYPE_INTEGER) {
+				localResult = localResult && OperatorFactory.compare(Integer.valueOf(this.values.get(i)), this.op, Integer.valueOf(this.expects.get(i)));
+			} else {
+				localResult = localResult && OperatorFactory.compare(this.values.get(i), this.op, this.expects.get(i));
+			}
 		}
+		this.result = localResult;
 		return this.result;
+	}
+
+	private void genExpects(String expectExpress) {
+		if (startsAndEndsWith(expectExpress, BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
+			for (String e : removeSubText(expectExpress, 1).split(SEPERATE_COMMA)) {
+				addExpect(e);
+			}
+		} else {
+			addExpect(expectExpress);
+		}
+	}
+
+	private void addExpect(String expect) {
+		if (startsAndEndsWith(expect, QUOTE_SINGLE) || startsAndEndsWith(expect, QUOTE_DOUBLE)) {
+			this.type = TYPE_STRING;
+			this.expects.add(removeSubText(expect, 1));
+		} else {
+			type = TYPE_INTEGER;
+			this.expects.add(expect);
+		}
+		
+	}
+
+	private void addValue(String value) {
+		this.values.add(value);
 	}
 }

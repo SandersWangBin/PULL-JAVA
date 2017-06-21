@@ -24,18 +24,16 @@ public class PullObj {
 
 	public PullObj check(String text) {
 		cleanPullVars();
-		result = true;
 		Matcher m = Pattern.compile(this.regExp).matcher(text);
-		if (m.find()) {
+		while (m.find()) {
 			for (int i = 1; i <=m.groupCount(); i++) {
 				PullVar v = (PullVar)this.pullVars.get(i-1);
 				if (v != null) {
-					result = result && v.value(m.group(i)).result();
+					v.value(m.group(i)).result();
 				}
 			}
-		} else {
-			result = false;
 		}
+		this.result = resultPullVars();
 		return this;
 	}
 
@@ -55,8 +53,21 @@ public class PullObj {
 
 	private void parserPullVars(String argvExp) {
 		for (String a : argvExp.split(";")) {
-			PullVar v = new PullVar(a.trim());
-			this.pullVars.put(v.index(), v);
+			try {
+			    PullVar v = new PullVar(a.trim());
+			    this.pullVars.put(v.index(), v);
+			} catch (Exception e) {
+				//TO DO: handle the special operator
+			}
 		}
 	}
+
+	private boolean resultPullVars() {
+		boolean localResult = true;
+		for (Integer key : this.pullVars.keySet()) {
+			localResult = localResult && this.pullVars.get(key).result();
+		}
+		return localResult;
+	}
+
 }
