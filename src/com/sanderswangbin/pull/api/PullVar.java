@@ -74,7 +74,7 @@ public class PullVar {
 	}
 
 	private String removeSubText(String text, int subTextLength) {
-		if (text != null && text.length() > subTextLength*2) {
+		if (text != null && text.length() >= subTextLength*2) {
 			return text.substring(subTextLength, text.length()-subTextLength);
 		} else {
 			return text;
@@ -82,6 +82,9 @@ public class PullVar {
 	}
 
 	private boolean checkResult() {
+		if (this.expects.size() == 0) {
+			return this.result;
+		}
 		boolean localResult = true;
 		for (Integer i = 0; i < this.values.size(); i++) {
 			if (this.type == TYPE_INTEGER) {
@@ -109,12 +112,13 @@ public class PullVar {
 		expect = expect.trim();
 		if (startsAndEndsWith(expect, QUOTE_SINGLE) || startsAndEndsWith(expect, QUOTE_DOUBLE)) {
 			this.type = TYPE_STRING;
-			this.expects.add(removeSubText(expect, 1));
+			expect = removeSubText(expect, 1);
 		} else {
 			type = TYPE_INTEGER;
+		}
+		if (expect.length() > 0) {
 			this.expects.add(expect);
 		}
-		
 	}
 
 	private void addValue(String value) {
@@ -143,7 +147,7 @@ public class PullVar {
 	private String toStringList(List<String> list) {
 		String valuesString = new String();
 		for (int i = 0; i < list.size(); i++) {
-			valuesString = valuesString + this.values.get(i) + "; "; 
+			valuesString = valuesString + list.get(i) + "; "; 
 		}
 		return valuesString;
 	}
