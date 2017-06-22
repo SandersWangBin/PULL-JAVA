@@ -70,4 +70,15 @@ public class PullObj {
 		return localResult;
 	}
 
+	public String toString() {
+		String resultString = new String();
+		resultString = "==== PullObj Debug Info ====\n"
+		        + "= regExp: " + regExp + "\n" 
+				+ "= PullVars: \n";
+		for (Integer key : this.pullVars.keySet()) {
+			resultString = resultString + "Key: " + key + "\n" + this.pullVars.get(key);
+		}
+		resultString = resultString + "= result: " + result + "\n\n";
+		return resultString;
+	}
 }

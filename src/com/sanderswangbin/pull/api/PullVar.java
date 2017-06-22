@@ -83,9 +83,7 @@ public class PullVar {
 
 	private boolean checkResult() {
 		boolean localResult = true;
-//		System.out.println(this.index + " values size: " + this.values.size());
 		for (Integer i = 0; i < this.values.size(); i++) {
-//			System.out.println(this.index + " value: " + this.values.get(i) + " expect: " + this.expects.get(i));
 			if (this.type == TYPE_INTEGER) {
 				localResult = localResult && OperatorFactory.compare(Integer.valueOf(this.values.get(i)), this.op, Integer.valueOf(this.expects.get(i)));
 			} else {
@@ -97,16 +95,18 @@ public class PullVar {
 	}
 
 	private void genExpects(String expectExpress) {
-		if (startsAndEndsWith(expectExpress, BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
-			for (String e : removeSubText(expectExpress, 1).split(SEPERATE_COMMA)) {
+		expectExpress = expectExpress.trim();
+		if (startsAndEndsWith(expectExpress.trim(), BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
+			for (String e : removeSubText(expectExpress.trim(), 1).split(SEPERATE_COMMA)) {
 				addExpect(e);
 			}
 		} else {
-			addExpect(expectExpress);
+			addExpect(expectExpress.trim());
 		}
 	}
 
 	private void addExpect(String expect) {
+		expect = expect.trim();
 		if (startsAndEndsWith(expect, QUOTE_SINGLE) || startsAndEndsWith(expect, QUOTE_DOUBLE)) {
 			this.type = TYPE_STRING;
 			this.expects.add(removeSubText(expect, 1));
@@ -119,5 +119,24 @@ public class PullVar {
 
 	private void addValue(String value) {
 		this.values.add(value);
+	}
+
+	public String toString() {
+		return (new String ("---- PullVar Debug Info ----\n" +
+		"    - index:    " + index + "\n" +
+		"    - alias:    " + alias + "\n" +
+		"    - operator: " + op + "\n" +
+		"    - values:   " + toStringList(values) + "\n" +
+		"    - expects:  " + toStringList(expects) + "\n" +
+		"    - result:   " + result + "\n" +
+		"    - type:     " + type + "\n"));
+	}
+
+	private String toStringList(List<String> list) {
+		String valuesString = new String();
+		for (int i = 0; i < list.size(); i++) {
+			valuesString = valuesString + this.values.get(i) + "; "; 
+		}
+		return valuesString;
 	}
 }
