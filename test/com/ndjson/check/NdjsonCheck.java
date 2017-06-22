@@ -32,9 +32,9 @@ public class NdjsonCheck {
 	        + "\"type\": \"([a-zA-Z]*)\",[a-zA-Z0-9:,\\s\"]*"
 			+ "\"id\": \"([a-zA-Z0-9\\._-]*)\"\\}\'"
 			+ ".PULL("
-			+ "{0}==[ 201,       201,                          201,           201,       201,                           201];"
+			+ "{0}==201;"
+			+ "{2}==\"create\";"
 			+ "{1}==[\"groups\",\"metrics\",                 \"reports\",   \"groups\",\"metrics\",                   \"reports\"];"
-			+ "{2}==[\"create\",\"create\",                  \"create\",    \"create\",\"create\",                    \"create\",];"
 			+ "{3}==[\"HTTP\",  \"HTTP.response.error.rate\",\"web_report\",\"HTTP2\", \"HTTP.response.error.rate.2\",\"web_2_report\"])";
 
 	public boolean checkUseRegex(String regex, String text) {

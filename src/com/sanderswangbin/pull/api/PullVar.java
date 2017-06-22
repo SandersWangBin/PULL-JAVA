@@ -85,9 +85,9 @@ public class PullVar {
 		boolean localResult = true;
 		for (Integer i = 0; i < this.values.size(); i++) {
 			if (this.type == TYPE_INTEGER) {
-				localResult = localResult && OperatorFactory.compare(Integer.valueOf(this.values.get(i)), this.op, Integer.valueOf(this.expects.get(i)));
+				localResult = localResult && OperatorFactory.compare(Integer.valueOf(safeGet(this.values, i)), this.op, Integer.valueOf(safeGet(this.expects, i)));
 			} else {
-				localResult = localResult && OperatorFactory.compare(this.values.get(i), this.op, this.expects.get(i));
+				localResult = localResult && OperatorFactory.compare(safeGet(this.values, i), this.op, safeGet(this.expects, i));
 			}
 		}
 		this.result = localResult;
@@ -119,6 +119,14 @@ public class PullVar {
 
 	private void addValue(String value) {
 		this.values.add(value);
+	}
+
+	private String safeGet(List<String> list, Integer index) {
+		if (index < list.size()) {
+			return list.get(index);
+		} else {
+			return list.get(list.size() - 1);
+		}
 	}
 
 	public String toString() {
