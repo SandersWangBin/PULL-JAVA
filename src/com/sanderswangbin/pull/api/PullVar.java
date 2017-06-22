@@ -83,7 +83,9 @@ public class PullVar {
 
 	private boolean checkResult() {
 		boolean localResult = true;
+//		System.out.println(this.index + " values size: " + this.values.size());
 		for (Integer i = 0; i < this.values.size(); i++) {
+//			System.out.println(this.index + " value: " + this.values.get(i) + " expect: " + this.expects.get(i));
 			if (this.type == TYPE_INTEGER) {
 				localResult = localResult && OperatorFactory.compare(Integer.valueOf(this.values.get(i)), this.op, Integer.valueOf(this.expects.get(i)));
 			} else {
