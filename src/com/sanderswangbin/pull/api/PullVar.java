@@ -96,12 +96,12 @@ public class PullVar {
 
 	private void genExpects(String expectExpress) {
 		expectExpress = expectExpress.trim();
-		if (startsAndEndsWith(expectExpress.trim(), BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
-			for (String e : removeSubText(expectExpress.trim(), 1).split(SEPERATE_COMMA)) {
+		if (startsAndEndsWith(expectExpress, BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
+			for (String e : removeSubText(expectExpress, 1).split(SEPERATE_COMMA)) {
 				addExpect(e);
 			}
 		} else {
-			addExpect(expectExpress.trim());
+			addExpect(expectExpress);
 		}
 	}
 
@@ -123,13 +123,13 @@ public class PullVar {
 
 	public String toString() {
 		return (new String ("---- PullVar Debug Info ----\n" +
-		"    - index:    " + index + "\n" +
-		"    - alias:    " + alias + "\n" +
+		"    - index   : " + index + "\n" +
+		"    - alias   : " + alias + "\n" +
 		"    - operator: " + op + "\n" +
-		"    - values:   " + toStringList(values) + "\n" +
-		"    - expects:  " + toStringList(expects) + "\n" +
-		"    - result:   " + result + "\n" +
-		"    - type:     " + type + "\n"));
+		"    - values  : " + toStringList(values) + "\n" +
+		"    - expects : " + toStringList(expects) + "\n" +
+		"    - result  : " + result + "\n" +
+		"    - type    : " + type + "\n"));
 	}
 
 	private String toStringList(List<String> list) {
