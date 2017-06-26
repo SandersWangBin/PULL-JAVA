@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sanderswangbin.pull.util.OperatorCmp;
 import com.sanderswangbin.pull.util.OperatorFactory;
 
 public class PullVar {
@@ -25,7 +24,7 @@ public class PullVar {
 	private List<String> expects = new ArrayList<String>();
 	private boolean result = false;
 	private String type = TYPE_STRING;
-	private static Integer value_index = -1;
+//	private static Integer value_index = -1;
 
 	public PullVar(String pullArg) throws Exception {
 		Matcher m = Pattern.compile(REG_PULL_VAR).matcher(pullArg);
@@ -62,7 +61,7 @@ public class PullVar {
 	public void clean() {
 		result = false;
 		this.values.clear();
-		value_index = -1;
+//		value_index = -1;
 	}
 
 	private boolean startsAndEndsWith(String text, String subText) {

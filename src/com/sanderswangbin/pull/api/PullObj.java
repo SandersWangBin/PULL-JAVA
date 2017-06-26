@@ -12,6 +12,12 @@ public class PullObj {
 	private String regExp = null;
 	private Map<Integer, PullVar> pullVars = new HashMap<Integer, PullVar>();
 	private boolean result = false;
+	private boolean match = false;
+
+	public static boolean test(String pullExp) {
+		Matcher m = Pattern.compile(REG_PULL_OBJ_EXP).matcher(pullExp);
+		return m.find();
+	}
 
 	public PullObj(String pullExp) throws Exception {
 		initPullObj(pullExp);
@@ -36,6 +42,7 @@ public class PullObj {
 		cleanPullVars();
 		Matcher m = Pattern.compile(this.regExp).matcher(text);
 		while (m.find()) {
+			this.match = true;
 			for (int i = 1; i <=m.groupCount(); i++) {
 				PullVar v = (PullVar)this.pullVars.get(i-1);
 				if (v != null) {
@@ -49,6 +56,10 @@ public class PullObj {
 
 	public boolean result() {
 		return this.result;
+	}
+
+	public boolean match() {
+		return this.match;
 	}
 
 	public Map<Integer, PullVar> vars() {

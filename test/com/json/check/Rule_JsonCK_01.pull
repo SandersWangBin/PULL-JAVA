@@ -1,1 +1,6 @@
 PULL_EXAMPLE_01: r'\{"message": "([a-zA-Z]+)\s.*'([a-zA-Z0-9_-]+)'"\}'.PULL({0}=="Created";{1}=="ExampleObj01")
+
+PULL_EXAMPLE_02_01: r'"ID"\s*:\s*([0-9]+)\s*'.PULL({0}==[10,15])
+PULL_EXAMPLE_02_02: r'"NAME"\s*:\s*"([A-Z0-9]+)"'.PULL({0}==["OBJ010","OBJ015"])
+
+PULL_EXAMPLE_03: PULL_EXAMPLE_02_01 + PULL_EXAMPLE_02_02

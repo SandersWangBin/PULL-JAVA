@@ -2,7 +2,6 @@ package com.sanderswangbin.pull.api;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -13,16 +12,23 @@ import java.util.regex.Pattern;
 public class PullChain {
 	private final static String REG_PULL_CHAIN_EXP = "f\'(.*)\'.PULL\\((.*)\\)";
 	private final static String REG_PULL_OBJ_EXP = "^([a-zA-Z0-9\\._-]+)\\s*:\\s*(.*)";
+
+	private final static String SYMBOL_NEXT = ">";
+	private final static String SYMBOL_PLUS = "\\+";
+
 	private String pullChainFile = null;
 	private String pullChain = null;
-	private Map<String, PullObj> pullObjs = new HashMap<String, PullObj>(); 
+	private PullCtrl pullChainRoot = null;
+	private Map<String, PullObj> pullObjs = new HashMap<String, PullObj>();
+	private Map<String, String> pullObjRefs = new HashMap<String, String>();
+	private boolean result = false;
 
 	public PullChain(String pullExp) throws Exception {
 		Matcher m = Pattern.compile(REG_PULL_CHAIN_EXP).matcher(pullExp);
 		if (m.find()) {
 			this.pullChainFile = m.group(1);
-			this.pullChain = m.group(2);
 			readPullChainFile(this.pullChainFile);
+			this.pullChain = genPullChain(m.group(2));
 		} else {
 			throw new Exception("ERROR: wrong PULL expression.");
 		}
@@ -45,21 +51,78 @@ public class PullChain {
 		try {
 			Matcher m = Pattern.compile(REG_PULL_OBJ_EXP).matcher(line);
 			if (m.find()) {
-				pullObjs.put(m.group(1), new PullObj(m.group(1), m.group(2)));
+				if (PullObj.test(m.group(2))) pullObjs.put(m.group(1), new PullObj(m.group(1), m.group(2)));
+				else pullObjRefs.put(m.group(1), m.group(2));
 			}
 		} catch (Exception e) {
 			// Do nothing
 		}
 	}
 
+	private String updatePullChain(String pullChainString) {
+		if (pullObjRefs.get(pullChainString) != null) return pullObjRefs.get(pullChainString);
+		else return pullChainString;
+	}
+
+	private String genPullChain(String pullChainString) {
+		PullCtrl previous = null;
+		this.pullChain = updatePullChain(pullChainString);
+		for (String l : this.pullChain.split(SYMBOL_NEXT)) {
+			PullCtrl ctrl = new PullCtrl();
+			if (this.pullChainRoot == null) this.pullChainRoot = ctrl;
+			if (previous != null) previous.next(ctrl);
+			previous = ctrl;
+			for (String m : l.split(SYMBOL_PLUS)) {
+				if (this.pullObjs.get(m.trim()) != null) ctrl.children().add(this.pullObjs.get(m.trim()));
+			}
+		}
+		return this.pullChain;
+	}
+
+	private boolean checkLine(PullCtrl ctrl, String line) {
+		boolean result = false;
+		if (ctrl != null && line.length() > 0) {
+			for (PullObj obj : ctrl.children()) {
+				boolean r = obj.check(line).result();
+				result = result || r;
+			}
+		}
+		return result;
+	}
+
+	public PullChain check(String text) {
+		this.result = checkLine(this.pullChainRoot, text);
+		return this;
+	}
+
+	public boolean result() {
+		return this.result;
+	}
+
 	public String toString() {
 		String result = "==== Pull Chain ====\n";
 		if (pullChainFile != null) result += "Pull Chain File: " + this.pullChainFile + "\n";
-		if (pullChain != null)    result += "Pull Chain     : " + this.pullChain + "\n";
+		if (pullChain != null)     result += "Pull Chain     : " + this.pullChain + "\n";
+		if (pullChainRoot != null) result += "Pull Chain Root: " + toStringChainRoot() + "\n";
+		result += "Pull Chain Result: " + this.result + "\n";
 		result += "Pull Objs: \n";
 		for (String key : this.pullObjs.keySet()) {
 			result += this.pullObjs.get(key);
 		}
+		result += "Pull Obj Refs: \n";
+		for (String key : this.pullObjRefs.keySet()) {
+			result += "  key: " + key + " -> " + this.pullObjRefs.get(key) + "\n";
+		}
+		return result;
+	}
+
+	private String toStringChainRoot() {
+		String result = "";
+		if (this.pullChainRoot != null) {
+			PullCtrl next = this.pullChainRoot;
+			result += next + " > ";
+		}
+		if (result.length() >= 3) result = result.substring(0, result.length()-3);
 		return result;
 	}
 }

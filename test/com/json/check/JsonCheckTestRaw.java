@@ -1,5 +1,6 @@
 package com.json.check;
 
+import com.sanderswangbin.pull.api.PullChain;
 import com.sanderswangbin.pull.api.PullObj;
 
 import java.util.ArrayList;
@@ -32,6 +33,20 @@ public class JsonCheckTestRaw {
 		    }
 		} catch (Exception e) {
 			System.out.print(e);
+		}
+		return results;
+	}
+
+	public List<Boolean> checkUsePullChain(String pullChainExp, String... texts) {
+		List <Boolean> results = new ArrayList<Boolean>();
+		try {
+		    PullChain pChain = new PullChain(pullChainExp);
+		    for (String text : texts) {
+		    	results.add(pChain.check(text).result());
+//		    	System.out.println(pChain);
+		    }
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		return results;
 	}
