@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import com.sanderswangbin.pull.api.PullObj;
 
-public class CloudCliParser {
+public class CloudCliParserTestRaw {
 
 	private static final String CLI_CLOUD_01 = 
 			"+--------------------------------------+------------+--------------------+----------------------+\n" + 
@@ -19,7 +19,7 @@ public class CloudCliParser {
 	private static final String REG_CLOUD_01 = 
 	        "\\|\\s*([a-z0-9_-]+)\\s*\\|\\s*([A-Z_]+)\\s*\\|\\s*([A-Z_]+)\\s*\\|\\s*([A-Z0-9-:]+)\\s*\\|";
 
-	private static final String PULL_CLOUD_01 = "p\'" +
+	private static final String PULL_CLOUD_01 = "r\'" +
 	        "\\|\\s*([a-z0-9_-]+)\\s*\\|\\s*([A-Z_]+)\\s*\\|\\s*([A-Z_]+)\\s*\\|\\s*([A-Z0-9-:]+)\\s*\\|" +
 			"\'.PULL(" + 
 	        "{0}==[];{1}==[];{2}==[];{3}==[])";
@@ -36,7 +36,7 @@ public class CloudCliParser {
 		return result;
 	}
 	public static void main(String... argv) {
-		CloudCliParser ccp = new CloudCliParser();
+		CloudCliParserTestRaw ccp = new CloudCliParserTestRaw();
 		// Get the values from regex.
 		System.out.print("Parser using regex: ");
 		for (String r : ccp.parserUseRegex(REG_CLOUD_01, CLI_CLOUD_01)) {

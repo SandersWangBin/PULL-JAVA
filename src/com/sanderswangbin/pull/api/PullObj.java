@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PullObj {
-	private final static String REG_PULL_EXP = "p\'(.*)\'.PULL\\((.*)\\)";
+	private final static String REG_PULL_EXP = "r\'(.*)\'.PULL\\((.*)\\)";
 
 	private String regExp = null;
 	private Map<Integer, PullVar> pullVars = new HashMap<Integer, PullVar>();

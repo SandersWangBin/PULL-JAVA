@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import com.sanderswangbin.pull.api.PullObj;
 
-public class NdjsonCheck {
+public class NdjsonCheckTestRaw {
 	final static String NDJSON_EXAMPLE_01_TRUE = "{\"items\": [{\"operation\": "
 			+ "{\"status\": 201, \"successful\": true, \"endpoint\": \"groups\", \"type\": \"create\", \"id\": \"HTTP\"}}, "
 			+ "{\"operation\": {\"status\": 201, \"successful\": true, \"endpoint\": \"metrics\", \"type\": \"create\", \"id\": \"HTTP.response.error.rate\"}}, "
@@ -26,7 +26,7 @@ public class NdjsonCheck {
 			{"201", "metrics", "create", "HTTP.response.error.rate.2"},
 			{"201", "reports", "create", "web_2_report"}};
 
-	final static String PULL_EXAMPLE_01 = "p\'\\{\"operation\":\\s*\\{"
+	final static String PULL_EXAMPLE_01 = "r\'\\{\"operation\":\\s*\\{"
 	        + "\\s*\"status\": ([0-9]*),[a-zA-Z0-9:,\\s\"]*"
 			+ "\"endpoint\": \"([a-zA-Z]*)\",[a-zA-Z0-9:,\\s\"]*"
 	        + "\"type\": \"([a-zA-Z]*)\",[a-zA-Z0-9:,\\s\"]*"
@@ -49,7 +49,7 @@ public class NdjsonCheck {
 
 	public static void main(String... argv) {
 		// NDJSON check using regex.
-		NdjsonCheck nck = new NdjsonCheck();
+		NdjsonCheckTestRaw nck = new NdjsonCheckTestRaw();
 		String regex = new String();
 		for (Integer i = 0; i < CHECK_EXAMPLE_01.length; i++) {
 			regex = regex + String.format(REG_EXAMPLE_01, 
