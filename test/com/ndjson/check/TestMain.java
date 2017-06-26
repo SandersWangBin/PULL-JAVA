@@ -50,7 +50,7 @@ public class TestMain {
 		// NDJSON check using PULL.
 		try {
 		    PullObj p = new PullObj(PULL_EXAMPLE_01);
-		    System.out.println("Check result using PULL: " + p.check(NDJSON_EXAMPLE_01_TRUE).getResult());
+		    System.out.println("Check result using PULL: " + p.check(NDJSON_EXAMPLE_01_TRUE).result());
 		    // Print out the debug info.
 		    System.out.println(p);
 		} catch (Exception e) {

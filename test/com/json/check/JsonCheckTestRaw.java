@@ -28,7 +28,7 @@ public class JsonCheckTestRaw {
 		try {
 		    PullObj p = new PullObj(pullExp);
 		    for (String text : texts) {
-		        results.add(p.check(text).getResult());
+		        results.add(p.check(text).result());
 		    }
 		} catch (Exception e) {
 			System.out.print(e);

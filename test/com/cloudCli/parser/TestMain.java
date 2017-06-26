@@ -33,8 +33,8 @@ public class TestMain {
 			System.out.print("Parser using PULL: ");
 			PullObj p = new PullObj(PULL_CLOUD_01);
 			p.check(CLI_CLOUD_01);
-			for (int i = 0; i < p.getVars().size(); i++) {
-				System.out.print(p.getVars().get(i).values().get(0) + "; ");
+			for (int i = 0; i < p.vars().size(); i++) {
+				System.out.print(p.vars().get(i).values().get(0) + "; ");
 			}
 		} catch (Exception e) {
 			System.out.println(e);

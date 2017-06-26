@@ -6,14 +6,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PullObj {
-	private final static String REG_PULL_EXP = "r\'(.*)\'.PULL\\((.*)\\)";
+	private final static String REG_PULL_OBJ_EXP = "r\'(.*)\'.PULL\\((.*)\\)";
 
+	private String pullObjName = "";
 	private String regExp = null;
 	private Map<Integer, PullVar> pullVars = new HashMap<Integer, PullVar>();
 	private boolean result = false;
 
 	public PullObj(String pullExp) throws Exception {
-		Matcher m = Pattern.compile(REG_PULL_EXP).matcher(pullExp);
+		initPullObj(pullExp);
+	}
+
+	public PullObj(String objName, String pullExp) throws Exception {
+		this.pullObjName = objName;
+		initPullObj(pullExp);
+	}
+
+	private void initPullObj(String pullExp) throws Exception {
+		Matcher m = Pattern.compile(REG_PULL_OBJ_EXP).matcher(pullExp);
 		if (m.find()) {
 			this.regExp = m.group(1);
 			parserPullVars(m.group(2));
@@ -37,12 +47,16 @@ public class PullObj {
 		return this;
 	}
 
-	public boolean getResult() {
+	public boolean result() {
 		return this.result;
 	}
 
-	public Map<Integer, PullVar> getVars() {
+	public Map<Integer, PullVar> vars() {
 		return this.pullVars;
+	}
+
+	public String name() {
+		return this.pullObjName;
 	}
 
 	private void cleanPullVars() {
@@ -73,7 +87,8 @@ public class PullObj {
 	public String toString() {
 		String resultString = new String();
 		resultString = "==== PullObj Debug Info ====\n"
-		        + "= regExp: " + regExp + "\n" 
+				+ "= objName : " + pullObjName + "\n"
+		        + "= regExp  : " + regExp + "\n" 
 				+ "= PullVars: \n";
 		for (Integer key : this.pullVars.keySet()) {
 			resultString = resultString + "Key: " + key + "\n" + this.pullVars.get(key);

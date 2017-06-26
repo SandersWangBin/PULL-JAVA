@@ -1,0 +1,1 @@
+PULL_EXAMPLE_01: r'\{"message": "([a-zA-Z]+)\s.*'([a-zA-Z0-9_-]+)'"\}'.PULL({0}=="Created";{1}=="ExampleObj01")
