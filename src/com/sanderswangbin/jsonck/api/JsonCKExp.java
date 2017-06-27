@@ -9,9 +9,13 @@ public class JsonCKExp {
 
 	private final static String FORMAT_PULL_EXP_STRING  = "%s: r\'%s\\s*:\\s*\"([a-zA-Z0-9\\._-]+)\"\\s*\'.PULL({0}%s)";
 	private final static String FORMAT_PULL_EXP_INTEGER = "%s: r\'%s\\s*:\\s*([0-9]+)\\s*\'.PULL({0}%s)";
+	private final static String FORMAT_PULL_EXP_BOOLEAN = "%s: r\'%s\\s*:\\s*([a-zA-Z]+)\\s*\'.PULL({0}%s)";
 
 	private final static String TYPE_STRING = "STRING";
 	private final static String TYPE_INTEGER = "INTEGER";
+	private final static String TYPE_BOOLEAN = "BOOLEAN";
+	private final static String BOOLEAN_TRUE = "true";
+	private final static String BOOLEAN_FALSE = "false";
 
 	private String name = "";
 	private String operator = "";
@@ -30,9 +34,12 @@ public class JsonCKExp {
 		this.pullExp = genPullExp();
 	}
 
-	private String getType(String var) {
-		if (Pattern.compile(REG_JSONCK_VAR_TYPE_INTEGER).matcher(var).find()) {
+	private String getType(String value) {
+		if (Pattern.compile(REG_JSONCK_VAR_TYPE_INTEGER).matcher(value).find()) {
 			return TYPE_INTEGER;
+		} else if (value.toLowerCase().contains(BOOLEAN_TRUE) ||
+				value.toLowerCase().contains(BOOLEAN_FALSE)){
+			return TYPE_BOOLEAN;
 		} else {
 			return TYPE_STRING;
 		}
@@ -44,13 +51,14 @@ public class JsonCKExp {
 			expVar = m.group(1);
 			expOp = m.group(2);
 			expValue = m.group(3);
-			expType = getType(expVar);
+			expType = getType(expValue);
 		}
 	}
 
 	private String genPullExp() {
 		if (expType == TYPE_STRING) return String.format(FORMAT_PULL_EXP_STRING, name, expVar, expOp+expValue);
 		else if (expType == TYPE_INTEGER) return String.format(FORMAT_PULL_EXP_INTEGER, name, expVar, expOp+expValue);
+		else if (expType == TYPE_BOOLEAN) return String.format(FORMAT_PULL_EXP_BOOLEAN, name, expVar, expOp+expValue);
 		else return "";
 	}
 
