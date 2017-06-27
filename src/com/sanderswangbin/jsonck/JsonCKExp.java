@@ -1,4 +1,4 @@
-package com.sanderswangbin.jsonck.api;
+package com.sanderswangbin.jsonck;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

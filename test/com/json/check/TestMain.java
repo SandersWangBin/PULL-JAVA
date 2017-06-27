@@ -1,6 +1,6 @@
 package com.json.check;
 
-import com.sanderswangbin.jsonck.api.JsonCK;
+import com.sanderswangbin.jsonck.JsonCK;
 
 public class TestMain {
 	final static String JSON_EXAMPLE_01_TRUE = "{\"message\": \"Created example object \'ExampleObj01\'\"}";
