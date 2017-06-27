@@ -81,7 +81,7 @@ public class PullVar {
 	}
 
 	private boolean checkResult() {
-		if (this.expects.size() == 0) {
+		if (this.expects.size() == 0 || this.values.size() == 0) {
 			return this.result;
 		}
 		boolean localResult = true;
