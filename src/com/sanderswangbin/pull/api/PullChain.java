@@ -15,8 +15,7 @@ public class PullChain {
 
 	private final static String REG_PULL_OBJ_EXP = "^([a-zA-Z0-9\\._-]+)\\s*:\\s*(.*)";
 
-	private final static String SEPERATOR_NEWLINE = "<NEWLINE>";
-	private final static String SYMBOL_NEWLINE = "\n";
+	private final static String SEPERATOR_NEWLINE = "\n";
 	private final static String SYMBOL_NEXT = ">";
 	private final static String SYMBOL_PLUS = "\\+";
 
@@ -36,7 +35,7 @@ public class PullChain {
 			readPullChainFile(this.pullChainFile);
 			this.pullChain = genPullChains(m.group(2));
 		} else {
-			m = Pattern.compile(REG_PULL_CHAIN_MULTILINES_EXP).matcher(pullExp);
+			m = Pattern.compile(REG_PULL_CHAIN_MULTILINES_EXP, Pattern.DOTALL).matcher(pullExp);
 			if (m.find()) {
 				this.pullChainMultilines = m.group(1);
 				readPullChainMultilines(this.pullChainMultilines);

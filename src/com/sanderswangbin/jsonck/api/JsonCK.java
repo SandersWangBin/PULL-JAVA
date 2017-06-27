@@ -8,7 +8,7 @@ import com.sanderswangbin.pull.api.PullChain;
 public class JsonCK {
 	private final static String SEPERATOR_OR = "\\|\\|";
 	private final static String SEPERATOR_AND = "&&";
-	private final static String SEPERATOR_NEWLINE = "<NEWLINE>";
+	private final static String SYMBOL_NEWLINE = "\n";
 	private final static String SYMBOL_OR = "||";
 	private final static String SYMBOL_AND = "&&";
 
@@ -46,7 +46,7 @@ public class JsonCK {
 	private String genPullExp() {
 		String result = "m\'";
 		for (JsonCKExp jExp : jsonCKExpList) {
-			result += jExp.pullExp() + SEPERATOR_NEWLINE;
+			result += jExp.pullExp() + SYMBOL_NEWLINE;
 		}
 		result += genPullExpRef() + ": ";
 		for (Integer i = 0; i < JSONCK_EXP_IND; i++) {
@@ -63,7 +63,7 @@ public class JsonCK {
 		try {
 		    PullChain pChain = new PullChain(pullExp);
 		    pChain.check(text);
-//		    System.out.println(pChain);
+		    System.out.println(pChain);
 		    return true;
 		} catch (Exception e) {
 //			System.out.println(e);

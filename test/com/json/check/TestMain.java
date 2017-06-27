@@ -71,5 +71,6 @@ public class TestMain {
 		// JSON check using JsonCK expression
 		JsonCK jck = new JsonCK("\"message\"==\"Created\" || \"id\"==\"HTTP\" && \"result\"==true");
 		jck.check("{\"message\": \"Created\"}");
+		System.out.println(jck);
 	}
 }
