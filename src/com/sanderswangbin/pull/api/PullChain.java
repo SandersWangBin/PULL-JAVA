@@ -32,6 +32,7 @@ public class PullChain {
 	public PullChain(String pullExp) throws Exception {
 		Matcher m = Pattern.compile(REG_PULL_CHAIN_FILE_EXP).matcher(pullExp);
 		if (m.find()) {
+			this.pullChainFile = m.group(1);
 			readPullChainFile(this.pullChainFile);
 			this.pullChain = genPullChains(m.group(2));
 		} else {

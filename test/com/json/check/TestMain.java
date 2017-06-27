@@ -69,7 +69,7 @@ public class TestMain {
 		testPullChain();
 
 		// JSON check using JsonCK expression
-		JsonCK jck = new JsonCK("\"method\"==\"Created\" && \"id\"==\"HTTP\" || \"result\"==true");
-		System.out.println(jck);
+		JsonCK jck = new JsonCK("\"message\"==\"Created\" || \"id\"==\"HTTP\" && \"result\"==true");
+		jck.check("{\"message\": \"Created\"}");
 	}
 }

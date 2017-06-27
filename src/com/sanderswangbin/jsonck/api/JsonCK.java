@@ -2,8 +2,6 @@ package com.sanderswangbin.jsonck.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sanderswangbin.pull.api.PullChain;
 
@@ -65,10 +63,10 @@ public class JsonCK {
 		try {
 		    PullChain pChain = new PullChain(pullExp);
 		    pChain.check(text);
-		    System.out.println(pChain);
+//		    System.out.println(pChain);
 		    return true;
 		} catch (Exception e) {
-			System.out.println(e);
+//			System.out.println(e);
 			return false;
 		}
 	}
@@ -80,13 +78,5 @@ public class JsonCK {
 //			result += jExp;
 //		}
 		return result;
-	}
-
-	public static void main(String... argv) {
-		JsonCK jck = new JsonCK("\"message\"==\"Created\" || \"id\"==\"HTTP\" && \"result\"==true");
-//		System.out.println(jck);
-		jck.check("{\"message\": \"Created\"}");
-
-		
 	}
 }
