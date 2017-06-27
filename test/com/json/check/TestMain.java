@@ -90,5 +90,10 @@ public class TestMain {
 		String JSONCK_EXAMPLE_02_01 = "{\"id\": \"HTTP\", \"method\": \"Created\", \"error\": false}";
 		String JSONCK_EXAMPLE_02_02 = "{\"id\": \"HTTP\", \"method\": \"Updated\", \"error\": true}";
 		testJsonCK(JSONCK_EXP_02, JSONCK_EXAMPLE_02_01, JSONCK_EXAMPLE_02_02);
+
+//		String JSONCK_EXP_03 = "\"ID\"==[10, 15]";
+		String JSONCK_EXP_03 = "\"NAME\"==[\"OBJ010\", \"OBJ015\"]";
+		String JSONCK_EXAMPLE_03_01  = "[{\"ID\": 10, \"NAME\": \"OBJ010\"}, {\"ID\": 15, \"NAME\": \"OBJ015\"}]";
+		testJsonCK(JSONCK_EXP_03, JSONCK_EXAMPLE_03_01);
 	}
 }
