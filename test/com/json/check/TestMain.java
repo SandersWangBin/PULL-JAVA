@@ -1,5 +1,7 @@
 package com.json.check;
 
+import com.sanderswangbin.jsonck.api.JsonCK;
+
 public class TestMain {
 	final static String JSON_EXAMPLE_01_TRUE = "{\"message\": \"Created example object \'ExampleObj01\'\"}";
 	final static String JSON_EXAMPLE_01_FALSE = "{\"message\": \"Failed to created \'ExampleObj01\'\"}";
@@ -65,5 +67,9 @@ public class TestMain {
 
 		// JSON check using Pull chain expression
 		testPullChain();
+
+		// JSON check using JsonCK expression
+		JsonCK jck = new JsonCK("\"method\"==\"Created\" && \"id\"==\"HTTP\" || \"result\"==true");
+		System.out.println(jck);
 	}
 }

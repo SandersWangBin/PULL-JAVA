@@ -100,6 +100,7 @@ public class PullObj {
 		resultString = "==== PullObj Debug Info ====\n"
 				+ "= objName : " + pullObjName + "\n"
 		        + "= regExp  : " + regExp + "\n" 
+		        + "= matched : " + match + "\n"
 				+ "= PullVars: \n";
 		for (Integer key : this.pullVars.keySet()) {
 			resultString = resultString + "Key: " + key + "\n" + this.pullVars.get(key);

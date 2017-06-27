@@ -86,11 +86,13 @@ public class PullVar {
 		}
 		boolean localResult = true;
 		for (Integer i = 0; i < this.values.size(); i++) {
+			boolean r;
 			if (this.type == TYPE_INTEGER) {
-				localResult = localResult && OperatorFactory.compare(Integer.valueOf(safeGet(this.values, i)), this.op, Integer.valueOf(safeGet(this.expects, i)));
+				r = OperatorFactory.compare(Integer.valueOf(safeGet(this.values, i)), this.op, Integer.valueOf(safeGet(this.expects, i)));
 			} else {
-				localResult = localResult && OperatorFactory.compare(safeGet(this.values, i), this.op, safeGet(this.expects, i));
+				r =  OperatorFactory.compare(safeGet(this.values, i), this.op, safeGet(this.expects, i));
 			}
+			localResult = localResult && r;
 		}
 		this.result = localResult;
 		return this.result;
@@ -113,7 +115,8 @@ public class PullVar {
 			this.type = TYPE_STRING;
 			expect = removeSubText(expect, 1);
 		} else {
-			type = TYPE_INTEGER;
+			if (Pattern.compile("[0-9]+").matcher(expect).find()) type = TYPE_INTEGER;
+			else type = TYPE_STRING;
 		}
 		if (expect.length() > 0) {
 			this.expects.add(expect);

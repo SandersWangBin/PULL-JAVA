@@ -10,13 +10,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PullChain {
-	private final static String REG_PULL_CHAIN_EXP = "f\'(.*)\'.PULL\\((.*)\\)";
+	private final static String REG_PULL_CHAIN_FILE_EXP = "f\'(.*)\'.PULL\\((.*)\\)";
+	private final static String REG_PULL_CHAIN_MULTILINES_EXP = "m\'(.*)\'.PULL\\((.*)\\)";
+
 	private final static String REG_PULL_OBJ_EXP = "^([a-zA-Z0-9\\._-]+)\\s*:\\s*(.*)";
 
+	private final static String SEPERATOR_NEWLINE = "<NEWLINE>";
+	private final static String SYMBOL_NEWLINE = "\n";
 	private final static String SYMBOL_NEXT = ">";
 	private final static String SYMBOL_PLUS = "\\+";
 
 	private String pullChainFile = null;
+	private String pullChainMultilines = null;
 	private String pullChain = null;
 	private PullCtrl pullChainRoot = null;
 	private PullCtrl pullChainCurrent = null;
@@ -25,17 +30,23 @@ public class PullChain {
 	private boolean result = false;
 
 	public PullChain(String pullExp) throws Exception {
-		Matcher m = Pattern.compile(REG_PULL_CHAIN_EXP).matcher(pullExp);
+		Matcher m = Pattern.compile(REG_PULL_CHAIN_FILE_EXP).matcher(pullExp);
 		if (m.find()) {
-			this.pullChainFile = m.group(1);
 			readPullChainFile(this.pullChainFile);
-			this.pullChain = genPullChain(m.group(2));
+			this.pullChain = genPullChains(m.group(2));
 		} else {
-			throw new Exception("ERROR: wrong PULL expression.");
+			m = Pattern.compile(REG_PULL_CHAIN_MULTILINES_EXP).matcher(pullExp);
+			if (m.find()) {
+				this.pullChainMultilines = m.group(1);
+				readPullChainMultilines(this.pullChainMultilines);
+				this.pullChain = genPullChains(m.group(2));
+			} else {
+				throw new Exception("ERROR: wrong PULL expression.");
+			}
 		}
 	}
 
-	private void readPullChainFile (String fileName) throws IOException {
+	private void readPullChainFile(String fileName) throws IOException {
 		// Open the file
 		FileInputStream fstream = new FileInputStream(fileName);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
@@ -48,12 +59,21 @@ public class PullChain {
 		br.close();
 	}
 
+	private void readPullChainMultilines(String multilines) {
+		for (String strLine : multilines.split(SEPERATOR_NEWLINE)) {
+			readPullChainLine(strLine);
+		}
+	}
+
 	private void readPullChainLine(String line) {
 		try {
 			Matcher m = Pattern.compile(REG_PULL_OBJ_EXP).matcher(line);
 			if (m.find()) {
-				if (PullObj.test(m.group(2))) pullObjs.put(m.group(1), new PullObj(m.group(1), m.group(2)));
-				else pullObjRefs.put(m.group(1), m.group(2));
+				if (PullObj.test(m.group(2))) {
+					pullObjs.put(m.group(1), new PullObj(m.group(1), m.group(2)));
+				} else {
+					pullObjRefs.put(m.group(1), m.group(2));
+				}
 			}
 		} catch (Exception e) {
 			// Do nothing
@@ -65,7 +85,7 @@ public class PullChain {
 		else return pullChainString;
 	}
 
-	private String genPullChain(String pullChainString) {
+	private String genPullChains(String pullChainString) {
 		PullCtrl previous = null;
 		this.pullChain = updateUsedPullChainName(pullChainString);
 		for (String l : this.pullChain.split(SYMBOL_NEXT)) {
@@ -107,9 +127,10 @@ public class PullChain {
 
 	public String toString() {
 		String result = "==== Pull Chain ====\n";
-		if (pullChainFile != null) result += "Pull Chain File: " + this.pullChainFile + "\n";
-		if (pullChain != null)     result += "Pull Chain     : " + this.pullChain + "\n";
-		if (pullChainRoot != null) result += "Pull Chain Root: " + toStringChainRoot() + "\n";
+		if (pullChainFile != null)       result += "Pull Chain File      : " + this.pullChainFile + "\n";
+		if (pullChainMultilines != null) result += "Pull Chain MultiLines: " + this.pullChainMultilines + "\n";
+		if (pullChain != null)           result += "Pull Chain           : " + this.pullChain + "\n";
+		if (pullChainRoot != null)       result += "Pull Chain Root      : " + toStringChainRoot() + "\n";
 		result += "Pull Chain Result: " + this.result + "\n";
 		result += "Pull Objs: \n";
 		for (String key : this.pullObjs.keySet()) {
