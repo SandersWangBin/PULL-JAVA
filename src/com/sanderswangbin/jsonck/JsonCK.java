@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sanderswangbin.pull.api.PullChain;
+import com.sanderswangbin.pull.api.PullObj;
 
 public class JsonCK {
 	private final static String SEPERATOR_OR = "\\|\\|";
@@ -14,16 +15,15 @@ public class JsonCK {
 
 	private final static String FORMAT_JSONCK_EXP_NAME = "JSONCK_EXP_%s";
 	private static String JSONCK_EXP_ALL = "ALL";
-	private static Integer    JSONCK_EXP_IND = 0;
+	private static Integer JSONCK_EXP_IND = 0;
 
 	private String pullExp = "";
-	private String pullExpRef = "";
 	private List<JsonCKExp> jsonCKExpList = new ArrayList<JsonCKExp>();
+	private boolean result = false;
 
 	public JsonCK(String jsonCKExpLine) {
 		genJsonCKExpList(jsonCKExpLine);
 		pullExp = genPullExp();
-		pullExpRef = genPullExpRef();
 	}
 
 	private void genJsonCKExpList(String jsonCKExpLine) {
@@ -59,24 +59,46 @@ public class JsonCK {
 		return result;
 	}
 
-	public boolean check(String text) {
-		try {
-		    PullChain pChain = new PullChain(pullExp);
-		    pChain.check(text);
-		    System.out.println(pChain);
-		    return true;
-		} catch (Exception e) {
-//			System.out.println(e);
+	private boolean calculateBoolean(boolean first, String op, boolean second) {
+		if (op.contains(SYMBOL_AND)) {
+			return first && second;
+		} else if (op.contains(SYMBOL_OR)) {
+			return first || second;
+		} else {
 			return false;
 		}
+	}
+
+	private String getOpFromExpList(String expName) {
+		for (JsonCKExp exp : jsonCKExpList) {
+			if (exp.name().contains(expName)) return exp.operator();
+		}
+		return null;
+	}
+
+	public JsonCK check(String text) {
+		try {
+			boolean localResult = true;
+		    PullChain pChain = new PullChain(pullExp);
+		    for (PullObj obj : pChain.check(text).pullChainCurrent().children()) {
+		    	localResult = calculateBoolean(localResult, getOpFromExpList(obj.name()), obj.result());
+		    }
+		    this.result = localResult;
+		    //System.out.println(pChain);
+		} catch (Exception e) {
+			//System.out.println(e);
+		}
+		
+		return this;
+	}
+
+	public boolean result() {
+		return this.result;
 	}
 
 	public String toString() {
 		String result = "==== JSONCK INFO ====\n";
 		result += this.pullExp + "\n";
-//		for (JsonCKExp jExp : jsonCKExpList) {
-//			result += jExp;
-//		}
 		return result;
 	}
 }

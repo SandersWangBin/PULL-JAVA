@@ -66,6 +66,14 @@ public class JsonCKExp {
 		return this.pullExp;
 	}
 
+	public String name() {
+		return this.name;
+	}
+
+	public String operator() {
+		return this.operator;
+	}
+
 	public String toString() {
 		String result = "==== JSONCK EXPRESSION INFO ====\n";
 		result += "operator  : " + operator + "\n";

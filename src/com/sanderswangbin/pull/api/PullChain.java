@@ -121,6 +121,10 @@ public class PullChain {
 		return this;
 	}
 
+	public PullCtrl pullChainCurrent() {
+		return this.pullChainCurrent;
+	}
+
 	public boolean result() {
 		return this.result;
 	}

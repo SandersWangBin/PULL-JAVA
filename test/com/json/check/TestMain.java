@@ -58,6 +58,13 @@ public class TestMain {
 		}
 	}
 
+	private static void testJsonCK(String exp, String... json) {
+		JsonCK jck = new JsonCK(exp);
+		for (String j : json) {
+			System.out.println(j + " -> result : " + jck.check(j).result());
+		}
+	}
+
 	public static void main(String... argv) {
 		// JSON check using regular expression
 		testRegex();
@@ -69,8 +76,19 @@ public class TestMain {
 		testPullChain();
 
 		// JSON check using JsonCK expression
-		JsonCK jck = new JsonCK("\"message\"==\"Created\" || \"id\"==\"HTTP\" || \"result\"==true");
-		jck.check("{\"message\": \"Created\"}");
-		jck.check("{\"result\": true}");
+		String JSONCK_EXP_00 = "\"method\"==\"Created\"";
+		String JSONCK_EXAMPLE_00_01 = "{\"id\": \"HTTP\", \"method\": \"Created\", \"error\": false}";
+		testJsonCK(JSONCK_EXP_00, JSONCK_EXAMPLE_00_01);
+		
+		String JSONCK_EXP_01 = "\"method\"==\"Created\" || \"id\"==\"HTTP\" || \"result\"==true";
+		String JSONCK_EXAMPLE_01_01 = "{\"method\": \"Created\"}";
+		String JSONCK_EXAMPLE_01_02 = "{\"result\": false}";
+		String JSONCK_EXAMPLE_01_03 = "{\"successful\": true}";
+		testJsonCK(JSONCK_EXP_01, JSONCK_EXAMPLE_01_01, JSONCK_EXAMPLE_01_02, JSONCK_EXAMPLE_01_03);
+		
+		String JSONCK_EXP_02 = "\"method\"==\"Created\" && \"id\"==\"HTTP\" || \"result\"==true";
+		String JSONCK_EXAMPLE_02_01 = "{\"id\": \"HTTP\", \"method\": \"Created\", \"error\": false}";
+		String JSONCK_EXAMPLE_02_02 = "{\"id\": \"HTTP\", \"method\": \"Updated\", \"error\": true}";
+		testJsonCK(JSONCK_EXP_02, JSONCK_EXAMPLE_02_01, JSONCK_EXAMPLE_02_02);
 	}
 }
