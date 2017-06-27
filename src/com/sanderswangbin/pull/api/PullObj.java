@@ -90,8 +90,7 @@ public class PullObj {
 	private boolean resultPullVars() {
 		boolean localResult = true;
 		for (Integer key : this.pullVars.keySet()) {
-			boolean r = this.pullVars.get(key).result();
-			localResult = localResult && r;
+			localResult = localResult && this.pullVars.get(key).result();
 		}
 		return localResult;
 	}
