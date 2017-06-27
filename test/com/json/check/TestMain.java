@@ -51,7 +51,7 @@ public class TestMain {
 			System.out.println("Check result using PULL Chain (EXAMPLE_02): " + result);
 		}
 
-		for (Boolean result: jckRaw.checkUsePullChain(PULL_CHAIN_03, JSON_EXAMPLE_03_TRUE)) {
+		for (Boolean result: jckRaw.checkUsePullChain(PULL_CHAIN_03, JSON_EXAMPLE_03_FALSE, JSON_EXAMPLE_03_TRUE)) {
 			System.out.println("Check result using PULL Chain (EXAMPLE_03): " + result);
 		}
 	}

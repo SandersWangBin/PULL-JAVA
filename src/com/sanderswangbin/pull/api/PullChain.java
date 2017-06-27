@@ -19,6 +19,7 @@ public class PullChain {
 	private String pullChainFile = null;
 	private String pullChain = null;
 	private PullCtrl pullChainRoot = null;
+	private PullCtrl pullChainCurrent = null;
 	private Map<String, PullObj> pullObjs = new HashMap<String, PullObj>();
 	private Map<String, String> pullObjRefs = new HashMap<String, String>();
 	private boolean result = false;
@@ -59,14 +60,14 @@ public class PullChain {
 		}
 	}
 
-	private String updatePullChain(String pullChainString) {
+	private String updateUsedPullChainName(String pullChainString) {
 		if (pullObjRefs.get(pullChainString) != null) return pullObjRefs.get(pullChainString);
 		else return pullChainString;
 	}
 
 	private String genPullChain(String pullChainString) {
 		PullCtrl previous = null;
-		this.pullChain = updatePullChain(pullChainString);
+		this.pullChain = updateUsedPullChainName(pullChainString);
 		for (String l : this.pullChain.split(SYMBOL_NEXT)) {
 			PullCtrl ctrl = new PullCtrl();
 			if (this.pullChainRoot == null) this.pullChainRoot = ctrl;
@@ -76,6 +77,7 @@ public class PullChain {
 				if (this.pullObjs.get(m.trim()) != null) ctrl.children().add(this.pullObjs.get(m.trim()));
 			}
 		}
+		this.pullChainCurrent = this.pullChainRoot;
 		return this.pullChain;
 	}
 
@@ -91,7 +93,11 @@ public class PullChain {
 	}
 
 	public PullChain check(String text) {
-		this.result = checkLine(this.pullChainRoot, text);
+		this.result = checkLine(this.pullChainCurrent, text);
+		if (this.result == false && this.pullChainCurrent.next() != null) {
+			this.result = checkLine(this.pullChainCurrent.next(), text);
+			if (this.result == true) this.pullChainCurrent = this.pullChainCurrent.next();
+		}
 		return this;
 	}
 
