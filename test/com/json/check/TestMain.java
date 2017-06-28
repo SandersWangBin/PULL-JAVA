@@ -82,7 +82,7 @@ public class TestMain {
 		
 		String JSONCK_EXP_01 = "\"method\"==\"Created\" || \"id\"==\"HTTP\" || \"result\"==true";
 		String JSONCK_EXAMPLE_01_01 = "{\"method\": \"Created\"}";
-		String JSONCK_EXAMPLE_01_02 = "{\"result\": false}";
+		String JSONCK_EXAMPLE_01_02 = "{\"result\": true}";
 		String JSONCK_EXAMPLE_01_03 = "{\"successful\": true}";
 		testJsonCK(JSONCK_EXP_01, JSONCK_EXAMPLE_01_01, JSONCK_EXAMPLE_01_02, JSONCK_EXAMPLE_01_03);
 		
@@ -91,9 +91,24 @@ public class TestMain {
 		String JSONCK_EXAMPLE_02_02 = "{\"id\": \"HTTP\", \"method\": \"Updated\", \"error\": true}";
 		testJsonCK(JSONCK_EXP_02, JSONCK_EXAMPLE_02_01, JSONCK_EXAMPLE_02_02);
 
-//		String JSONCK_EXP_03 = "\"ID\"==[10, 15]";
-		String JSONCK_EXP_03 = "\"NAME\"==[\"OBJ010\", \"OBJ015\"]";
-		String JSONCK_EXAMPLE_03_01  = "[{\"ID\": 10, \"NAME\": \"OBJ010\"}, {\"ID\": 15, \"NAME\": \"OBJ015\"}]";
+		String JSONCK_EXP_03 = "\"error\"==[true, false] && \"ID\"==[10, 15] && \"NAME\"==[\"OBJ010\", \"OBJ015\"]";
+		String JSONCK_EXAMPLE_03_01  = "[{\"ID\": 10, \"NAME\": \"OBJ010\", \"error\": true}, {\"ID\": 15, \"NAME\": \"OBJ015\", \"error\": false}]";
 		testJsonCK(JSONCK_EXP_03, JSONCK_EXAMPLE_03_01);
+
+		String JSONCK_EXP_04 = "\"status\"==201 "
+				+ "&& \"id\"==[\"HTTP\",\"HTTP.response.error.rate\",\"web_report\"] "
+				+ "&& \"endpoint\"==[\"groups\",\"metrics\",\"reports\"] "
+				+ "&& \"successful\"==true";
+		String JSONCK_EXAMPLE_04_01 = "{\"items\": ["
+				+ "{\"operation\": {\"status\": 201, \"successful\": true, \"endpoint\": \"groups\", \"type\": \"create\", \"id\": \"HTTP\"}}, "
+				+ "{\"operation\": {\"status\": 201, \"successful\": true, \"endpoint\": \"metrics\", \"type\": \"create\", \"id\": \"HTTP.response.error.rate\"}}, "
+				+ "{\"operation\": {\"status\": 201, \"successful\": true, \"endpoint\": \"reports\", \"type\": \"create\", \"id\": \"web_report\"}}"
+				+ "], \"errors\": false}";
+		String JSONCK_EXAMPLE_04_02 = "{\"items\": ["
+				+ "{\"operation\": {\"status\": 201, \"successful\": true, \"endpoint\": \"groups\", \"type\": \"create\", \"id\": \"HTTP\"}}, "
+				+ "{\"operation\": {\"status\": 404, \"successful\": true, \"endpoint\": \"metrics\", \"type\": \"create\", \"id\": \"HTTP.response.error.rate\"}}, "
+				+ "{\"operation\": {\"status\": 500, \"successful\": true, \"endpoint\": \"reports\", \"type\": \"create\", \"id\": \"web_report\"}}"
+				+ "], \"errors\": false}";
+		testJsonCK(JSONCK_EXP_04, JSONCK_EXAMPLE_04_01, JSONCK_EXAMPLE_04_02);
 	}
 }

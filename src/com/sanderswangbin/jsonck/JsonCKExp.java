@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class JsonCKExp {
 	private final static String REG_JSONCK_EXPRESS = "\\s*(\".*\")\\s*([!<=>]+)\\s*(.*)\\s*";
-	private final static String REG_JSONCK_VAR_TYPE_INTEGER = "^\\d+$";
+	private final static String REG_JSONCK_VAR_TYPE_INTEGER = "^\\d+$|\\[\\s*\\d+(\\s*,\\s*\\d+)*\\]";
 
 	private final static String FORMAT_PULL_EXP_STRING  = "%s: r\'%s\\s*:\\s*\"([a-zA-Z0-9\\._-]+)\"\\s*\'.PULL({0}%s)";
 	private final static String FORMAT_PULL_EXP_INTEGER = "%s: r\'%s\\s*:\\s*([0-9]+)\\s*\'.PULL({0}%s)";
@@ -48,9 +48,9 @@ public class JsonCKExp {
 	private void parserJsonCKExp(String expression) {
 		Matcher m = Pattern.compile(REG_JSONCK_EXPRESS).matcher(expression);
 		if (m.find()) {
-			expVar = m.group(1);
-			expOp = m.group(2);
-			expValue = m.group(3);
+			expVar = m.group(1).trim();
+			expOp = m.group(2).trim();
+			expValue = m.group(3).trim();
 			expType = getType(expValue);
 		}
 	}
