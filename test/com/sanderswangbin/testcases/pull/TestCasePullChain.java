@@ -24,6 +24,7 @@ public class TestCasePullChain extends TestCaseBase {
 		}
 	}
 
+	@Override
 	public TestCasePullChain test() {
 		String TC_01_NAME = "PULL CHAIN EXPRESSION TEST 01";
 		String PULL_CHAIN_01 = "f\'test\\com\\sanderswangbin\\testcases\\pull\\Rule_JsonCK_01.pull\'.PULL(PULL_EXAMPLE_01)";

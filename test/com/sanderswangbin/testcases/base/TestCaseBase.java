@@ -7,7 +7,7 @@ public abstract class TestCaseBase {
 	private final static String TC_DETAIL_INDENT = "    ";
 	private final static String TC_NEWLINE = "\n";
 	private final static String TC_HEADER = "> TESTCASE: %s" + TC_NEWLINE;
-	private final static String TC_SUM = "==== TEST SUITE (%s) RESULT: SUCCESS (%d/%d => %d%%), FAIL (%d/%d)" + TC_NEWLINE;
+	private final static String TC_SUM = "==== TEST SUITE (%s) RESULT: SUCCESS (%d/%d => %s%%), FAIL (%d/%d)" + TC_NEWLINE;
 
 	private List<TestCaseResult> results = new ArrayList<TestCaseResult>();
 	private String name = "";
@@ -40,7 +40,7 @@ public abstract class TestCaseBase {
 		}
 		return String.format(TC_SUM, 
 				name,
-				success, results.size(), success/results.size()*100, 
+				success, results.size(), new Double((double)success/(double)results.size()*(double)100.0).toString(), 
 				fail, results.size());
 	}
 
