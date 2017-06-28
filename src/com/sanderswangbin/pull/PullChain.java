@@ -1,4 +1,4 @@
-package com.sanderswangbin.pull.api;
+package com.sanderswangbin.pull;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

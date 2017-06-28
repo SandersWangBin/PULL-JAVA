@@ -1,6 +1,6 @@
 package com.ndjson.check;
 
-import com.sanderswangbin.pull.api.PullObj;
+import com.sanderswangbin.pull.PullObj;
 
 public class TestMain {
 	final static String NDJSON_EXAMPLE_01_TRUE = "{\"items\": [{\"operation\": "

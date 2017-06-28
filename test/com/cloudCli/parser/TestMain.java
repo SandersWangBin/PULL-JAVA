@@ -1,6 +1,6 @@
 package com.cloudCli.parser;
 
-import com.sanderswangbin.pull.api.PullObj;
+import com.sanderswangbin.pull.PullObj;
 
 public class TestMain {
 
