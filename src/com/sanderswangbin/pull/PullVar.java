@@ -9,10 +9,11 @@ import com.sanderswangbin.pull.util.OperatorFactory;
 
 public class PullVar {
 	private final static String REG_PULL_VAR = "\\{([0-9]+)\\}\\s*([!<=>]+)\\s*(.*)";
-	private final static String QUOTE_SINGLE = "\'";
-	private final static String QUOTE_DOUBLE = "\"";
-	private final static String BRACKET_SQUARE_LEFT = "[";
-	private final static String BRACKET_SQUARE_RIGHT = "]";
+	private final static String REG_TYPE_STRING = "^[\'\"](.*)[\'\"]$";
+//	private final static String REG_TYPE_STRING_2 = "[a-zA-Z]+";
+	private final static String REG_TYPE_INTEGER = "^[0-9\\.\\,]+$";
+	private final static String REG_TYPE_LIST = "^\\[(.*)\\]$";
+
 	private final static String SEPERATE_COMMA = ",";
 	private final static String TYPE_STRING = "STRING";
 	private final static String TYPE_INTEGER = "INTEGER";
@@ -64,22 +65,6 @@ public class PullVar {
 //		value_index = -1;
 	}
 
-	private boolean startsAndEndsWith(String text, String subText) {
-		return text.startsWith(subText) && text.endsWith(subText);
-	}
-
-	private boolean startsAndEndsWith(String text, String subText1, String subText2) {
-		return text.startsWith(subText1) && text.endsWith(subText2);
-	}
-
-	private String removeSubText(String text, int subTextLength) {
-		if (text != null && text.length() >= subTextLength*2) {
-			return text.substring(subTextLength, text.length()-subTextLength);
-		} else {
-			return text;
-		}
-	}
-
 	private boolean checkResult() {
 		if (this.expects.size() == 0 || this.values.size() == 0) {
 			return this.result;
@@ -98,10 +83,10 @@ public class PullVar {
 
 	private void genExpects(String expectExpress) {
 		expectExpress = expectExpress.trim();
-		if (startsAndEndsWith(expectExpress, BRACKET_SQUARE_LEFT, BRACKET_SQUARE_RIGHT)) {
-			for (String e : removeSubText(expectExpress, 1).split(SEPERATE_COMMA)) {
-				addExpect(e);
-			}
+		Matcher m = Pattern.compile(REG_TYPE_LIST).matcher(expectExpress);
+		if (m.find()) {
+			expectExpress = m.group(1);
+			for (String e : expectExpress.split(SEPERATE_COMMA)) addExpect(e);
 		} else {
 			addExpect(expectExpress);
 		}
@@ -109,12 +94,13 @@ public class PullVar {
 
 	private void addExpect(String expect) {
 		expect = expect.trim();
-		if (startsAndEndsWith(expect, QUOTE_SINGLE) || startsAndEndsWith(expect, QUOTE_DOUBLE)) {
+		if (Pattern.compile(REG_TYPE_INTEGER).matcher(expect).find()) {
+			this.type = TYPE_INTEGER;
+		}
+		else {
 			this.type = TYPE_STRING;
-			expect = removeSubText(expect, 1);
-		} else {
-			if (Pattern.compile("[0-9]+").matcher(expect).find()) type = TYPE_INTEGER;
-			else type = TYPE_STRING;
+			Matcher m = Pattern.compile(REG_TYPE_STRING).matcher(expect);
+			if (m.find()) expect = m.group(1).trim();
 		}
 		if (expect.length() > 0) {
 			this.expects.add(expect);
