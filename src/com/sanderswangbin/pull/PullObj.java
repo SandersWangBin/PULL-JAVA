@@ -46,7 +46,7 @@ public class PullObj {
 			for (int i = 1; i <=m.groupCount(); i++) {
 				PullVar v = (PullVar)this.pullVars.get(i-1);
 				if (v != null) {
-					v.value(m.group(i)).result();
+					v.value(m.group(i));
 				}
 			}
 		}
