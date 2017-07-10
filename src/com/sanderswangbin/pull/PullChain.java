@@ -33,13 +33,13 @@ public class PullChain {
 		if (m.find()) {
 			this.pullChainFile = m.group(1);
 			readPullChainFile(this.pullChainFile);
-			this.pullChain = genPullChains(m.group(2));
+			genPullChains(m.group(2));
 		} else {
 			m = Pattern.compile(REG_PULL_CHAIN_MULTILINES_EXP, Pattern.DOTALL).matcher(pullExp);
 			if (m.find()) {
 				this.pullChainMultilines = m.group(1);
 				readPullChainMultilines(this.pullChainMultilines);
-				this.pullChain = genPullChains(m.group(2));
+				genPullChains(m.group(2));
 			} else {
 				throw new Exception("ERROR: wrong PULL expression.");
 			}
@@ -80,21 +80,36 @@ public class PullChain {
 		}
 	}
 
+	private boolean checkRef(String pullChainString) {
+		return pullObjRefs.get(pullChainString) != null;
+	}
+
+	private boolean checkObj(String pullChainString) {
+		return pullObjs.get(pullChainString) != null;
+	}
+
 	private String updateUsedPullChainName(String pullChainString) {
-		if (pullObjRefs.get(pullChainString) != null) return pullObjRefs.get(pullChainString);
+		if (checkRef(pullChainString)) return pullObjRefs.get(pullChainString);
 		else return pullChainString;
 	}
 
 	private String genPullChains(String pullChainString) {
-		PullCtrl previous = null;
-		this.pullChain = updateUsedPullChainName(pullChainString);
-		for (String l : this.pullChain.split(SYMBOL_NEXT)) {
+		if (checkObj(pullChainString)) {
+			this.pullChain = pullChainString;
 			PullCtrl ctrl = new PullCtrl();
-			if (this.pullChainRoot == null) this.pullChainRoot = ctrl;
-			if (previous != null) previous.next(ctrl);
-			previous = ctrl;
-			for (String m : l.split(SYMBOL_PLUS)) {
-				if (this.pullObjs.get(m.trim()) != null) ctrl.children().add(this.pullObjs.get(m.trim()));
+			this.pullChainRoot = ctrl;
+			ctrl.children().add(this.pullObjs.get(pullChainString));
+		} else {
+			PullCtrl previous = null;
+			this.pullChain = updateUsedPullChainName(pullChainString);
+			for (String l : this.pullChain.split(SYMBOL_NEXT)) {
+				PullCtrl ctrl = new PullCtrl();
+				if (this.pullChainRoot == null) this.pullChainRoot = ctrl;
+				if (previous != null) previous.next(ctrl);
+				previous = ctrl;
+				for (String m : l.split(SYMBOL_PLUS)) {
+					if (checkObj(m.trim())) ctrl.children().add(this.pullObjs.get(m.trim()));
+				}
 			}
 		}
 		this.pullChainCurrent = this.pullChainRoot;
@@ -149,9 +164,10 @@ public class PullChain {
 
 	private String toStringChainRoot() {
 		String result = "";
-		if (this.pullChainRoot != null) {
-			PullCtrl next = this.pullChainRoot;
+		PullCtrl next = this.pullChainRoot;
+		while (next != null) {
 			result += next + " > ";
+			next = next.next();
 		}
 		if (result.length() >= 3) result = result.substring(0, result.length()-3);
 		return result;
